@@ -31,7 +31,7 @@ export default function SubmissionDetail({ submission }: { submission: Submissio
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
       {/* 헤더 */}
       <header style={{ background: "#0A0A0A", borderBottom: "1px solid #1A1A1A" }} className="sticky top-0 z-20">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <span style={{ background: "#fff", color: "var(--ink)", fontSize: "11px" }}
               className="font-bold px-2 py-1 rounded-md tracking-wide uppercase">AI Study</span>
@@ -44,16 +44,16 @@ export default function SubmissionDetail({ submission }: { submission: Submissio
       </header>
 
       {/* 히어로 */}
-      <section style={{ background: "#0A0A0A" }} className="pt-12 pb-14">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="flex items-center gap-2.5 mb-4">
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full"
-              style={{ background: "#fff", color: "var(--ink)" }}>
+      <section style={{ background: "#0A0A0A" }} className="pt-12 pb-16">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex items-center gap-2.5 mb-5">
+            <span className="text-2xl font-black tracking-tight" style={{ color: "#fff" }}>
               {submission.authorName}
             </span>
             {submission.authorContact && (
-              <span className="text-xs font-medium" style={{ color: "#666" }}>{submission.authorContact}</span>
+              <span className="text-xs font-medium" style={{ color: "#555" }}>{submission.authorContact}</span>
             )}
+            <span style={{ color: "#444" }}>·</span>
             <span className="text-xs" style={{ color: "#555" }}>
               {new Date(submission.createdAt).toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric" })}
             </span>
@@ -63,21 +63,22 @@ export default function SubmissionDetail({ submission }: { submission: Submissio
             {submission.title}
           </h1>
           {submission.description && (
-            <p className="mt-4 leading-relaxed max-w-2xl whitespace-pre-wrap break-words" style={{ color: "#888", fontSize: "0.95rem" }}>
+            <p className="mt-5 leading-relaxed whitespace-pre-wrap break-words"
+              style={{ color: "#888", fontSize: "0.95rem", maxWidth: "640px" }}>
               {submission.description}
             </p>
           )}
         </div>
       </section>
 
-      <main className="max-w-4xl mx-auto px-6 py-12 space-y-12">
+      <main className="max-w-6xl mx-auto px-6 py-12 space-y-12">
         {/* PDF */}
         <section>
           <div className="flex items-center gap-3 mb-5">
             <h2 className="font-bold text-sm uppercase tracking-widest" style={{ color: "var(--ink-muted)" }}>PDF</h2>
             <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
           </div>
-          <div className="rounded-2xl overflow-hidden p-8"
+          <div className="rounded-2xl overflow-hidden p-4"
             style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
             <PdfViewer url={submission.pdfUrl} />
           </div>
@@ -94,13 +95,13 @@ export default function SubmissionDetail({ submission }: { submission: Submissio
               </span>
               <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {submission.screenshots.map((url, i) => (
                 <button key={i} onClick={() => openLightbox(i)}
                   className="card-hover block rounded-xl overflow-hidden w-full text-left cursor-zoom-in"
                   style={{ border: "1px solid var(--border)", background: "var(--surface)" }}>
-                  <Image src={url} alt={`스크린샷 ${i + 1}`} width={600} height={400}
-                    className="w-full object-contain" />
+                  <Image src={url} alt={`스크린샷 ${i + 1}`} width={300} height={200}
+                    className="w-full object-cover aspect-video" />
                 </button>
               ))}
             </div>

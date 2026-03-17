@@ -4,7 +4,6 @@ import AuthorTabs from "@/components/submission/AuthorTabs";
 
 interface Submission {
   id: string;
-  cohort: string;
   authorName: string;
   title: string;
   description?: string;
@@ -21,7 +20,6 @@ async function getApprovedSubmissions(): Promise<Submission[]> {
     return snapshot.docs
       .map((doc) => ({
         id: doc.id,
-        cohort: doc.data().cohort || "미분류",
         authorName: doc.data().authorName,
         title: doc.data().title,
         description: doc.data().description,
@@ -38,7 +36,6 @@ export const revalidate = 60;
 
 export default async function HomePage() {
   const submissions = await getApprovedSubmissions();
-  const cohorts = ["전체", ...Array.from(new Set(submissions.map((s) => s.cohort))).sort()];
   const authors = ["전체", ...Array.from(new Set(submissions.map((s) => s.authorName)))];
 
   return (
@@ -114,7 +111,7 @@ export default async function HomePage() {
             </Link>
           </div>
         ) : (
-          <AuthorTabs cohorts={cohorts} authors={authors} submissions={submissions} />
+          <AuthorTabs authors={authors} submissions={submissions} />
         )}
       </main>
     </div>

@@ -3,7 +3,6 @@ import Image from "next/image";
 
 interface Submission {
   id: string;
-  cohort: string;
   authorName: string;
   title: string;
   description?: string;
@@ -34,11 +33,7 @@ export default function SubmissionCard({ submission }: { submission: Submission 
           </div>
         )}
         {/* 뱃지 */}
-        <div className="absolute top-3 left-3 flex gap-1.5">
-          <span className="text-xs font-bold px-2.5 py-1 rounded-full"
-            style={{ background: "var(--ink)", color: "#fff", letterSpacing: "-0.01em" }}>
-            {submission.cohort}
-          </span>
+        <div className="absolute top-3 left-3">
           <span className="text-xs font-semibold px-2.5 py-1 rounded-full"
             style={{ background: "rgba(255,255,255,0.9)", color: "var(--ink)", letterSpacing: "-0.01em" }}>
             {submission.authorName}

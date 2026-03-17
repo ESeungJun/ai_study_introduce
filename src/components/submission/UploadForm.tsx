@@ -20,7 +20,6 @@ export default function UploadForm() {
 
   const [form, setForm] = useState({
     password: "",
-    cohort: "1기",
     authorName: "",
     authorContact: "",
     title: "",
@@ -116,7 +115,6 @@ export default function UploadForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           password: form.password,
-          cohort: form.cohort,
           authorName: form.authorName,
           authorContact: form.authorContact,
           title: form.title,
@@ -154,7 +152,7 @@ export default function UploadForm() {
         <h2 className="font-black text-2xl mb-2" style={{ color: "var(--ink)" }}>제출 완료!</h2>
         <p className="text-sm mb-8" style={{ color: "var(--ink-muted)" }}>관리자 검토 후 승인되면 메인 페이지에 노출됩니다.</p>
         <button
-          onClick={() => { setStep("form"); setForm({ password: "", cohort: "", authorName: "", authorContact: "", title: "", description: "" }); setPdfFile(null); setScreenshotFiles([]); setVideoFile(null); }}
+          onClick={() => { setStep("form"); setForm({ password: "", authorName: "", authorContact: "", title: "", description: "" }); setPdfFile(null); setScreenshotFiles([]); setVideoFile(null); }}
           className="btn-primary px-8 py-3 rounded-full text-sm"
         >
           다시 제출하기
@@ -191,26 +189,6 @@ export default function UploadForm() {
         </div>
       </div>
 
-      {/* 기수 */}
-      <div>
-        <label className={labelClass} style={labelStyle}>기수 <span style={{ color: "#EF4444" }}>*</span></label>
-        <div className="flex flex-wrap gap-2">
-          {["1기"].map((g) => (
-            <button
-              key={g}
-              type="button"
-              onClick={() => setForm((p) => ({ ...p, cohort: g }))}
-              className="px-4 py-2 rounded-xl text-sm font-semibold transition-all"
-              style={form.cohort === g
-                ? { background: "var(--ink)", color: "#fff" }
-                : { background: "var(--bg)", color: "var(--ink-muted)", border: "1.5px solid var(--border)" }
-              }
-            >
-              {g}
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* 작성자 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

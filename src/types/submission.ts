@@ -6,7 +6,6 @@ export interface Submission {
   id: string;
   authorName: string;
   authorContact?: string;
-  cohort: string;
   title: string;
   description?: string;
   pdfUrl: string;
