@@ -46,7 +46,7 @@ export default function PdfViewer({ url }: { url: string }) {
           <div className="shadow-md rounded overflow-hidden">
             <Page
               pageNumber={currentPage}
-              width={Math.min(720, typeof window !== "undefined" ? window.innerWidth - 128 : 720)}
+              width={Math.min(1000, typeof window !== "undefined" ? window.innerWidth - 80 : 1000)}
               renderTextLayer={true}
               renderAnnotationLayer={true}
             />

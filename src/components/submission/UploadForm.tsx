@@ -291,6 +291,14 @@ export default function UploadForm() {
             ))}
           </div>
         )}
+        {loading && progress.screenshots > 0 && progress.screenshots < 100 && (
+          <div className="mt-2">
+            <div className="h-1 rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
+              <div className="h-full transition-all" style={{ width: `${progress.screenshots}%`, background: "var(--ink)" }} />
+            </div>
+            <p className="text-xs mt-1" style={{ color: "var(--ink-muted)" }}>스크린샷 업로드 중... {progress.screenshots}%</p>
+          </div>
+        )}
       </div>
 
       {/* 영상 */}
@@ -306,6 +314,14 @@ export default function UploadForm() {
             ? <p className="text-sm font-bold" style={{ color: "#16A34A" }}>{videoFile.name}</p>
             : <p className="text-sm" style={{ color: "var(--ink-subtle)" }}>영상 파일을 드래그하거나 클릭해서 선택</p>}
         </div>
+        {loading && progress.video > 0 && progress.video < 100 && (
+          <div className="mt-2">
+            <div className="h-1 rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
+              <div className="h-full transition-all" style={{ width: `${progress.video}%`, background: "var(--ink)" }} />
+            </div>
+            <p className="text-xs mt-1" style={{ color: "var(--ink-muted)" }}>영상 업로드 중... {progress.video}%</p>
+          </div>
+        )}
       </div>
 
       {error && (
