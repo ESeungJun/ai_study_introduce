@@ -1,0 +1,78 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+@import "tailwindcss";
+
+:root {
+  --bg: #F9F9FB;
+  --surface: #FFFFFF;
+  --ink: #0A0A0A;
+  --ink-secondary: #343B46;
+  --ink-muted: #6B7280;
+  --ink-subtle: #9CA3AF;
+  --accent: #0A0A0A;
+  --accent-light: #F0F0F0;
+  --border: #E5E7EB;
+  --border-strong: #D1D5DB;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-hover: 0 10px 40px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.12);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+/* 카드 호버 */
+.card-hover {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* 버튼 */
+.btn-primary {
+  background: var(--ink);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+.btn-primary:hover { opacity: 0.85; }
+.btn-primary:active { transform: scale(0.98); }
+
+.btn-outline {
+  background: transparent;
+  color: #fff;
+  font-weight: 600;
+  border: 1.5px solid rgba(255,255,255,0.35);
+  letter-spacing: -0.01em;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+.btn-outline:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.6);
+}
+.btn-outline:active { transform: scale(0.98); }
+
+.btn-accent {
+  background: var(--ink);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+.btn-accent:hover { opacity: 0.82; }
+.btn-accent:active { transform: scale(0.98); }
+
+/* 스크롤바 */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }

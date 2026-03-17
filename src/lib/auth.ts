@@ -1,0 +1,19 @@
+"use client";
+
+import { signInWithPopup, GoogleAuthProvider, signOut as firebaseSignOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+
+const provider = new GoogleAuthProvider();
+
+export async function signInWithGoogle() {
+  const result = await signInWithPopup(auth, provider);
+  return result.user;
+}
+
+export async function signOut() {
+  await firebaseSignOut(auth);
+}
+
+export function getCurrentUser() {
+  return auth.currentUser;
+}

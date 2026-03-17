@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // submissions: 승인된 것만 읽기 허용
+    // 생성/수정/삭제는 Admin SDK(서버사이드)에서만 처리 - 클라이언트 직접 접근 차단
+    match /submissions/{id} {
+      allow read: if resource.data.status == "approved";
+      allow create, update, delete: if false;
+    }
+
+    // users: 관리자 계정 관리 (읽기/쓰기 모두 차단, Admin SDK만 접근)
+    match /users/{id} {
+      allow read, write: if false;
+    }
+  }
+}

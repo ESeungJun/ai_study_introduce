@@ -1,0 +1,59 @@
+# Settings for Backend (on Cloud Run).
+# See https://firebase.google.com/docs/app-hosting/configure#cloud-run
+runConfig:
+  minInstances: 0
+
+env:
+  # Firebase 클라이언트 환경변수 (공개값)
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyCxj0SUMUUVwlp77LmhhwGJBNZNSSJKQvY
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: ai-study-6750c.firebaseapp.com
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: ai-study-6750c
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: ai-study-6750c.firebasestorage.app
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "476494972097"
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: 1:476494972097:web:dfe0ff97b2cfeb55508040
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # 업로드 공용 비밀번호 (Secret Manager 사용)
+  - variable: UPLOAD_PASSWORD
+    secret: UPLOAD_PASSWORD
+    availability:
+      - RUNTIME
+
+  # Firebase Admin SDK 시크릿 (민감값 - Secret Manager 사용)
+  - variable: FIREBASE_ADMIN_CLIENT_EMAIL
+    secret: FIREBASE_ADMIN_CLIENT_EMAIL
+    availability:
+      - RUNTIME
+
+  - variable: FIREBASE_ADMIN_PRIVATE_KEY
+    secret: FIREBASE_ADMIN_PRIVATE_KEY
+    availability:
+      - RUNTIME
