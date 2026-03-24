@@ -14,6 +14,8 @@ export default function AdminPage() {
   const [authLoading, setAuthLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [activeTab, setActiveTab] = useState<TabStatus>("pending");
+  const [migrating, setMigrating] = useState(false);
+  const [migrateProgress, setMigrateProgress] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (u) => {
@@ -44,6 +46,69 @@ export default function AdminPage() {
   const handleSignOut = useCallback(async () => {
     await signOut();
   }, []);
+
+  const handleMigrateThumbnails = async () => {
+    if (!user) return;
+    setMigrating(true);
+    setMigrateProgress("제출물 목록 조회 중...");
+
+    try {
+      const token = await user.getIdToken();
+
+      const res = await fetch("/api/admin/submissions/all", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const { submissions } = await res.json();
+
+      const targets = submissions.filter((s: { pdfThumbnailUrl: string | null }) => !s.pdfThumbnailUrl);
+      const total = targets.length;
+      let done = 0;
+      let failed = 0;
+
+      for (const sub of targets) {
+        try {
+          // PDF fetch
+          const pdfRes = await fetch(`/api/pdf?url=${encodeURIComponent(sub.pdfUrl)}`);
+          if (!pdfRes.ok) throw new Error("PDF fetch 실패");
+          const pdfData = await pdfRes.arrayBuffer();
+
+          // 썸네일 생성 (동적 import — 브라우저 전용)
+          const { generatePdfThumbnail } = await import("@/lib/pdf-thumbnail");
+          const blob = await generatePdfThumbnail(pdfData);
+          if (!blob) throw new Error("썸네일 생성 실패");
+
+          // Storage 업로드
+          const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
+          const { storage } = await import("@/lib/firebase");
+          const storageRef = ref(storage, `submissions/${sub.id}/pdf/thumbnail.jpg`);
+          await uploadBytes(storageRef, blob, { contentType: "image/jpeg" });
+          const pdfThumbnailUrl = await getDownloadURL(storageRef);
+
+          // Firestore 업데이트
+          await fetch(`/api/admin/submissions/${sub.id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ pdfThumbnailUrl }),
+          });
+
+          done++;
+        } catch {
+          failed++;
+        }
+        setMigrateProgress(`${done + failed} / ${total} 처리 완료${failed > 0 ? ` (${failed}건 실패)` : ""}`);
+      }
+
+      setMigrateProgress(`완료: ${done}건 성공${failed > 0 ? `, ${failed}건 실패` : ""}`);
+    } catch (e) {
+      console.error(e);
+      setMigrateProgress("오류가 발생했습니다.");
+    } finally {
+      setMigrating(false);
+    }
+  };
 
   if (authLoading) {
     return (
@@ -100,6 +165,20 @@ export default function AdminPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-8">
+        {/* 썸네일 마이그레이션 */}
+        <div className="mb-6 p-4 bg-white rounded-xl border flex items-center gap-4">
+          <button
+            onClick={handleMigrateThumbnails}
+            disabled={migrating}
+            className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+          >
+            {migrating ? "처리 중..." : "PDF 썸네일 일괄 생성"}
+          </button>
+          {migrateProgress && (
+            <span className="text-sm text-gray-600">{migrateProgress}</span>
+          )}
+        </div>
+
         {/* 탭 */}
         <div className="flex gap-1 mb-6 bg-white rounded-xl border p-1 w-fit">
           {tabs.map((tab) => (
