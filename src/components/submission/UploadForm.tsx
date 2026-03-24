@@ -6,6 +6,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { generatePdfThumbnail } from "@/lib/pdf-thumbnail";
 
 interface UploadProgress {
   pdf: number;
@@ -88,6 +89,23 @@ export default function UploadForm() {
         (p) => setProgress((prev) => ({ ...prev, pdf: p }))
       );
 
+      // PDF 썸네일 생성 (실패해도 계속 진행)
+      let pdfThumbnailUrl: string | null = null;
+      try {
+        // File/Blob은 ReadableStream이 아니므로 uploadBytesResumable 이후에도 arrayBuffer() 재호출 안전
+        const pdfData = await pdfFile.arrayBuffer();
+        const thumbnailBlob = await generatePdfThumbnail(pdfData);
+        if (thumbnailBlob) {
+          pdfThumbnailUrl = await uploadFile(
+            new File([thumbnailBlob], "thumbnail.jpg", { type: "image/jpeg" }),
+            `submissions/${tempId}/pdf/thumbnail.jpg`,
+            () => {}
+          );
+        }
+      } catch {
+        // 썸네일 생성 실패는 무시
+      }
+
       // 스크린샷 업로드
       const screenshots: string[] = [];
       for (let i = 0; i < screenshotFiles.length; i++) {
@@ -120,6 +138,7 @@ export default function UploadForm() {
           title: form.title,
           description: form.description,
           pdfUrl,
+          pdfThumbnailUrl,
           screenshots,
           videoUrl,
         }),

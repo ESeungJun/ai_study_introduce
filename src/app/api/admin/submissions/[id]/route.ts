@@ -27,13 +27,22 @@ export async function PATCH(
   }
 
   const { id } = await params;
-  const { status } = await req.json();
-
-  if (!["approved", "rejected"].includes(status)) {
-    return NextResponse.json({ error: "잘못된 상태값입니다." }, { status: 400 });
-  }
+  const body = await req.json();
+  const { status, pdfThumbnailUrl } = body;
 
   try {
+    if (typeof pdfThumbnailUrl !== "undefined") {
+      // 썸네일 URL만 업데이트 (status 검증 불필요)
+      await getAdminDb().collection("submissions").doc(id).update({
+        pdfThumbnailUrl,
+      });
+      return NextResponse.json({ success: true });
+    }
+
+    if (!["approved", "rejected"].includes(status)) {
+      return NextResponse.json({ error: "잘못된 상태값입니다." }, { status: 400 });
+    }
+
     await getAdminDb().collection("submissions").doc(id).update({
       status,
       approvedAt: status === "approved" ? FieldValue.serverTimestamp() : null,
@@ -72,6 +81,7 @@ export async function DELETE(
       const bucket = getStorage().bucket(`${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}.firebasestorage.app`);
       const filesToDelete = [
         data.pdfUrl,
+        data.pdfThumbnailUrl,
         ...(data.screenshots || []),
         data.videoUrl,
       ].filter(Boolean);

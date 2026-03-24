@@ -9,6 +9,7 @@ export interface Submission {
   title: string;
   description?: string;
   pdfUrl: string;
+  pdfThumbnailUrl?: string;
   screenshots: string[];
   videoUrl?: string;
   status: SubmissionStatus;

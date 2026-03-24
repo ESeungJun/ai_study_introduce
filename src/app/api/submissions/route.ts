@@ -5,7 +5,7 @@ import { FieldValue } from "firebase-admin/firestore";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { password, authorName, authorContact, title, description, pdfUrl, screenshots, videoUrl } = body;
+    const { password, authorName, authorContact, title, description, pdfUrl, screenshots, videoUrl, pdfThumbnailUrl } = body;
 
     if (password !== process.env.UPLOAD_PASSWORD) {
       return NextResponse.json({ error: "비밀번호가 올바르지 않습니다." }, { status: 401 });
@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
       title: title.trim(),
       description: description?.trim() || null,
       pdfUrl,
+      pdfThumbnailUrl: pdfThumbnailUrl || null,
       screenshots: screenshots || [],
       videoUrl: videoUrl?.trim() || null,
       status: "pending",

@@ -8,7 +8,7 @@ interface Submission {
   authorName: string;
   title: string;
   description?: string;
-  screenshots: string[];
+  pdfThumbnailUrl?: string;
   createdAt: string;
 }
 
