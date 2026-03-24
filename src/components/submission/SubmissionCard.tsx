@@ -6,13 +6,11 @@ interface Submission {
   authorName: string;
   title: string;
   description?: string;
-  screenshots: string[];
+  pdfThumbnailUrl?: string;
   createdAt: string;
 }
 
 export default function SubmissionCard({ submission }: { submission: Submission }) {
-  const thumbnail = submission.screenshots?.[0];
-
   return (
     <Link
       href={`/submission/${submission.id}`}
@@ -21,8 +19,8 @@ export default function SubmissionCard({ submission }: { submission: Submission 
     >
       {/* 썸네일 */}
       <div className="relative overflow-hidden" style={{ aspectRatio: "16/9", background: "#F3F4F6" }}>
-        {thumbnail ? (
-          <Image src={thumbnail} alt={submission.title} fill
+        {submission.pdfThumbnailUrl ? (
+          <Image src={submission.pdfThumbnailUrl} alt={submission.title} fill
             className="object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">

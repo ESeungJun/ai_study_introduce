@@ -7,7 +7,7 @@ interface Submission {
   authorName: string;
   title: string;
   description?: string;
-  screenshots: string[];
+  pdfThumbnailUrl?: string;
   createdAt: string;
 }
 
@@ -23,7 +23,7 @@ async function getApprovedSubmissions(): Promise<Submission[]> {
         authorName: doc.data().authorName,
         title: doc.data().title,
         description: doc.data().description,
-        screenshots: doc.data().screenshots || [],
+        pdfThumbnailUrl: doc.data().pdfThumbnailUrl || null,
         createdAt: doc.data().approvedAt?.toDate().toISOString() || new Date().toISOString(),
       }))
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
