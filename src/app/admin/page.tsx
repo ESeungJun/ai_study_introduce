@@ -95,7 +95,8 @@ export default function AdminPage() {
           });
 
           done++;
-        } catch {
+        } catch (err) {
+          console.error(`[migration] ${sub.id} 실패:`, err);
           failed++;
         }
         setMigrateProgress(`${done + failed} / ${total} 처리 완료${failed > 0 ? ` (${failed}건 실패)` : ""}`);

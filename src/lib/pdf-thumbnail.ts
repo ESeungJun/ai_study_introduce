@@ -1,7 +1,7 @@
 // 브라우저 전용 — Server Component나 API route에서 import 금지
 import * as pdfjsLib from "pdfjs-dist";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
 const SCALE = 1.5;
 const JPEG_QUALITY = 0.85;
