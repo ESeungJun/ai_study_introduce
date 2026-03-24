@@ -6,7 +6,6 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { generatePdfThumbnail } from "@/lib/pdf-thumbnail";
 
 interface UploadProgress {
   pdf: number;
@@ -94,6 +93,7 @@ export default function UploadForm() {
       try {
         // File/Blob은 ReadableStream이 아니므로 uploadBytesResumable 이후에도 arrayBuffer() 재호출 안전
         const pdfData = await pdfFile.arrayBuffer();
+        const { generatePdfThumbnail } = await import("@/lib/pdf-thumbnail");
         const thumbnailBlob = await generatePdfThumbnail(pdfData);
         if (thumbnailBlob) {
           pdfThumbnailUrl = await uploadFile(
