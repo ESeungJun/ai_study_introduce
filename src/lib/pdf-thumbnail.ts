@@ -10,7 +10,11 @@ export async function generatePdfThumbnail(
   pdfData: ArrayBuffer
 ): Promise<Blob | null> {
   try {
-    const loadingTask = pdfjsLib.getDocument({ data: pdfData });
+    const loadingTask = pdfjsLib.getDocument({
+      data: pdfData,
+      cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/cmaps/`,
+      cMapPacked: true,
+    });
     const pdf = await loadingTask.promise;
     const page = await pdf.getPage(1);
 
