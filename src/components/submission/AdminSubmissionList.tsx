@@ -12,6 +12,7 @@ interface Submission {
   title: string;
   description?: string;
   pdfUrl: string;
+  pdfThumbnailUrl?: string;
   screenshots: string[];
   videoUrl?: string;
   status: string;
@@ -27,6 +28,7 @@ export default function AdminSubmissionList({ status, user }: Props) {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [thumbnailLoading, setThumbnailLoading] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
 
   const fetchSubmissions = useCallback(async () => {
@@ -59,6 +61,39 @@ export default function AdminSubmissionList({ status, user }: Props) {
       setSubmissions((prev) => prev.filter((s) => s.id !== id));
     } finally {
       setActionLoading(null);
+    }
+  };
+
+  const handleRegenerateThumbnail = async (sub: Submission) => {
+    setThumbnailLoading(sub.id);
+    try {
+      const token = await user.getIdToken();
+      const pdfRes = await fetch(`/api/pdf?url=${encodeURIComponent(sub.pdfUrl)}`);
+      if (!pdfRes.ok) throw new Error("PDF fetch 실패");
+      const pdfData = await pdfRes.arrayBuffer();
+
+      const { generatePdfThumbnail } = await import("@/lib/pdf-thumbnail");
+      const blob = await generatePdfThumbnail(pdfData);
+      if (!blob) throw new Error("썸네일 생성 실패");
+
+      const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
+      const { storage } = await import("@/lib/firebase");
+      const storageRef = ref(storage, `submissions/${sub.id}/pdf/thumbnail.jpg`);
+      await uploadBytes(storageRef, blob, { contentType: "image/jpeg" });
+      const pdfThumbnailUrl = await getDownloadURL(storageRef);
+
+      await fetch(`/api/admin/submissions/${sub.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ pdfThumbnailUrl }),
+      });
+
+      alert("썸네일이 재생성되었습니다.");
+    } catch (err) {
+      console.error(err);
+      alert("썸네일 재생성에 실패했습니다.");
+    } finally {
+      setThumbnailLoading(null);
     }
   };
 
@@ -137,6 +172,16 @@ export default function AdminSubmissionList({ status, user }: Props) {
                   </Button>
                 </>
               )}
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => handleRegenerateThumbnail(s)}
+                loading={thumbnailLoading === s.id}
+                disabled={!!actionLoading}
+                className="text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50"
+              >
+                썸네일 재생성
+              </Button>
               <Button
                 size="sm"
                 variant="ghost"
