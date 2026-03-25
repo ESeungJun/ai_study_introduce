@@ -5,7 +5,7 @@ import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
 export default function PdfViewer({ url }: { url: string }) {
   const [numPages, setNumPages] = useState<number>(0);
@@ -40,6 +40,10 @@ export default function PdfViewer({ url }: { url: string }) {
 
         <Document
           file={proxyUrl}
+          options={{
+            cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+            cMapPacked: true,
+          }}
           onLoadSuccess={({ numPages }) => {
             setNumPages(numPages);
             setCurrentPage(1);
